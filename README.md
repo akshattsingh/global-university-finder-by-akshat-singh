@@ -17,5 +17,9 @@ Akshat Singh
 - JavaScript
 - Axios
 
+## 🔗 Live Demo
+  https://akshattsingh.github.io/global-university-finder-by-akshat-singh/
+
 ## API used 
    University finder API - "http://universities.hipolabs.com/search"
+
