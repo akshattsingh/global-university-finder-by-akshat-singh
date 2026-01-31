@@ -21,5 +21,6 @@ Akshat Singh
   https://akshattsingh.github.io/global-university-finder-by-akshat-singh/
 
 ## API used 
-   University finder API - "http://universities.hipolabs.com/search"
+   University finder API [Hipo Labs (via Cloudflare Worker Proxy)] -
+    "https://hipolabs-proxy.aksng19.workers.dev/search"
 
