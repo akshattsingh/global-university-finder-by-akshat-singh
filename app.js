@@ -1,4 +1,11 @@
-const BASE_URL = "http://universities.hipolabs.com/search";
+// The proxy handles the HTTPS -> HTTP transition
+const PROXY_URL = "https://corsproxy.io/?"; 
+const API_URL = "http://universities.hipolabs.com/search";
+
+// Helper to create a safe, proxied URL
+function getProxiedUrl(params) {
+    return `${PROXY_URL}${API_URL}${params}`;
+}
 
 // ---------------- COUNTRY SEARCH ----------------
 const countryInput = document.querySelector("#countryInput");
@@ -17,14 +24,19 @@ async function searchByCountry() {
     let country = countryInput.value.trim();
     if (!country) return;
 
-    let res = await axios.get(`${BASE_URL}?country=${country}`);
+    try {
+        // Use the proxied URL here
+        let res = await axios.get(getProxiedUrl(`?country=${country}`));
 
-    console.log(`Universities in ${country.toUpperCase()}:`);
-    res.data.forEach((col, index) => {
-        console.log(`${index + 1}. ${col.name}`);
-    });
+        console.log(`Universities in ${country.toUpperCase()}:`);
+        res.data.forEach((col, index) => {
+            console.log(`${index + 1}. ${col.name}`);
+        });
 
-    showCountry(res.data);
+        showCountry(res.data);
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
 }
 
 //function to display universities in the form of unordered list
@@ -62,19 +74,24 @@ async function searchByState() {
     let state = stateInput.value.trim().toLowerCase();
     if (!state) return;
 
-    let res = await axios.get(`${BASE_URL}?country=India`);
+    try {
+        // Use the proxied URL here
+        let res = await axios.get(getProxiedUrl(`?country=India`));
 
-    let filtered = res.data.filter(col =>
-        col["state-province"] &&
-        col["state-province"].toLowerCase().includes(state)
-    );
+        let filtered = res.data.filter(col =>
+            col["state-province"] &&
+            col["state-province"].toLowerCase().includes(state)
+        );
 
-    console.log(`Universities in ${state.toUpperCase()}:`);
-    filtered.forEach((col, index) => {
-        console.log(`${index + 1}. ${col.name}`);
-    });
+        console.log(`Universities in ${state.toUpperCase()}:`);
+        filtered.forEach((col, index) => {
+            console.log(`${index + 1}. ${col.name}`);
+        });
 
-    showState(filtered);
+        showState(filtered);
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
 }
 
 //function to display universities in the form of unordered list 
