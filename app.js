@@ -1,51 +1,53 @@
-// The proxy handles the HTTPS -> HTTP transition
-const PROXY_URL = "https://corsproxy.io/?"; 
-const API_URL = "http://universities.hipolabs.com/search";
 
-// Helper to create a safe, proxied URL
-function getProxiedUrl(params) {
-    return `${PROXY_URL}${API_URL}${params}`;
-}
+const API_URL = "https://hipolabs-proxy.aksng19.workers.dev/search";
 
-// ---------------- COUNTRY SEARCH ----------------
+// ---------------- COUNTRY SEARCH ------------------------
+
 const countryInput = document.querySelector("#countryInput");
 const countryBtn = document.querySelector("#country");
 
 countryBtn.addEventListener("click", searchByCountry);
+
 countryInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         searchByCountry();
     }
 });
 
-//function to search universities in required country using api
-
+// Function to search universities by country
 async function searchByCountry() {
     let country = countryInput.value.trim();
-    if (!country) return;
+
+    // Stop execution if input is empty
+    if (!country) {
+        console.warn("Country input is empty");
+        return;
+    }
 
     try {
-        // Use the proxied URL here
-        let res = await axios.get(getProxiedUrl(`?country=${country}`));
+        // API call using Axios
+        let res = await axios.get(`${API_URL}?country=${country}`);
 
         console.log(`Universities in ${country.toUpperCase()}:`);
         res.data.forEach((col, index) => {
             console.log(`${index + 1}. ${col.name}`);
         });
 
+        // Display results on UI
         showCountry(res.data);
+
     } catch (error) {
-        console.error("Fetch error:", error);
+        console.error("Country fetch error:", error);
     }
 }
 
-//function to display universities in the form of unordered list
-
+// Function to display country-wise universities
 function showCountry(colleges) {
     let list = document.querySelector("#clist");
     list.innerHTML = "";
 
     if (colleges.length === 0) {
+        console.warn("No universities found for this country");
         list.innerText = "No universities found";
         return;
     }
@@ -57,27 +59,34 @@ function showCountry(colleges) {
     });
 }
 
-// ---------------- STATE SEARCH ----------------
+// ---------------- STATE SEARCH --------------------------
+
 const stateInput = document.querySelector("#stateInput");
 const stateBtn = document.querySelector("#state");
 
 stateBtn.addEventListener("click", searchByState);
+
 stateInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         searchByState();
     }
 });
 
-//function to search universities in required state of India using api
-
+// Function to search universities by Indian state
 async function searchByState() {
     let state = stateInput.value.trim().toLowerCase();
-    if (!state) return;
+
+    // Stop execution if input is empty
+    if (!state) {
+        console.warn("State input is empty");
+        return;
+    }
 
     try {
-        // Use the proxied URL here
-        let res = await axios.get(getProxiedUrl(`?country=India`));
+        // Fetch all Indian universities
+        let res = await axios.get(`${API_URL}?country=India`);
 
+        // Filter universities by state-province field
         let filtered = res.data.filter(col =>
             col["state-province"] &&
             col["state-province"].toLowerCase().includes(state)
@@ -88,19 +97,21 @@ async function searchByState() {
             console.log(`${index + 1}. ${col.name}`);
         });
 
+        // Display filtered results
         showState(filtered);
+
     } catch (error) {
-        console.error("Fetch error:", error);
+        console.error("State fetch error:", error);
     }
 }
 
-//function to display universities in the form of unordered list 
-
+// Function to display state-wise universities
 function showState(colleges) {
     let list = document.querySelector("#slist");
     list.innerHTML = "";
 
     if (colleges.length === 0) {
+        console.warn("No colleges found for this state");
         list.innerText = "No colleges found for this state";
         return;
     }
