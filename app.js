@@ -33,12 +33,22 @@ async function searchByCountry() {
             console.log(`${index + 1}. ${col.name}`);
         });
 
-        // Display results on UI
-        showCountry(res.data);
+        // call sorting function
+        let sorted = sortByName(res.data);
+
+        // Display results alphabetically on UI
+        showCountry(sorted);
 
     } catch (error) {
         console.error("Country fetch error:", error);
     }
+}
+
+// function to sort names of colleges or universities in alphabetical order
+function sortByName(colleges) {
+    return colleges.sort((a, b) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+    );
 }
 
 // Function to display country-wise universities
@@ -97,8 +107,11 @@ async function searchByState() {
             console.log(`${index + 1}. ${col.name}`);
         });
 
-        // Display filtered results
-        showState(filtered);
+        // call sorting function
+        let sorted = sortByName(filtered);
+
+        // Display filtered results alphabetically on UI
+        showState(sorted);
 
     } catch (error) {
         console.error("State fetch error:", error);
